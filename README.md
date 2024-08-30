@@ -14,7 +14,7 @@ To run the whole web app, install all files in the main folder (taiwo).
 All Python libraries required are: Flask, SQLite, Pickle, Pandas, SpotiPy, NumPy, SKlearn. Any others you see are built into Python 3.
 Then, run the file main.py.
 You can either go to localhost on your browser, or the address given to you in the terminal.
-**This app is not intended for significant use, and hence it is running on a development server still. This also means that you will need to use your own API keys. 
+**This app is not intended for significant use, and hence it is running on a development server still. This also means that you will need to use your own API keys, and replace any data I have replaced with 'secret'. 
 
 # Who?
 Taiwo is named after Taiwo Awoniyi, an inspiration for this project. As a striker, he is what they call "the full package". This completeness inspired this idea for one program that tailored to all music needs: song suggestions, finding songs by their lyrics, and viewing my own listening statistics - all in one app.
