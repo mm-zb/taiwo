@@ -22,13 +22,7 @@ feature_columns = ['danceability',
                    'valence',
                    'tempo',
                    'popularity']
-#
-#feature_columns = ['acousticness', 'danceability', 'duration_ms', 'energy',
-#              'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
-#              'speechiness', 'tempo', 'time_signature', 'valence']
 #specifying the columns that will be used from the csv to calculate similarity
-
-
 
 def df_to_matrix(df):
     scaler = MinMaxScaler()
@@ -45,10 +39,7 @@ def df_to_matrix(df):
     #then a 'similarity value' is calculated for every pair of songs
     #each value is then placed in a matrix
 
-    #print((cosine_matrix)[0])
     return cosine_matrix
-
-#add distance matrix
 
 def add_id_to_df(id):
     df = pd.read_csv('csv/data.csv')
@@ -68,8 +59,8 @@ def add_id_to_df(id):
 def id_to_df(id):
     track = sp.track(id)
     #gets the song data from the id using spotipy
+  
     song_features = {}
-
     song_features['artist'] = track['artists'][0]['name']
     song_features['song_title'] = track['name']
     song_features['track_id'] = id
@@ -90,25 +81,12 @@ def recommend(song, model, df, n=10):
     indices = pd.Series(df.index, index=df['track_id']).drop_duplicates()
     #creates a pd.Series data structure
     #this is the same as a 1D array, but the indices can be anything
-    #for this I made the indices  the song id
-
-    #indices = pd.Series(df.index, index=df['song_title']).drop_duplicates()
-    #to search by song name instead
+    #for this I made the indices the song id
 
     index = indices[song]
     #get the index of the song input in the matrix
-
-
-    #try:
-    #    if len(index) > 1:
-    #        index = index[0]
-    #except TypeError as e:
-    #    pass
-    #error handling, so if there are multiple songs with same name 
-    # ****      deprecated as searching by id now       *****
     
     similarity = list(enumerate(model[index]))
-    #print(similarity[:4])
     #get the similarity values of each song for the input
     #it then enumerates them, so gives each song a new index
 
@@ -123,7 +101,6 @@ def recommend(song, model, df, n=10):
     # item in each tuple (because it has been enumerated).
 
     top_similarity = sorted_similarity[1:n+1]
-    #print(top_similarity)
     #gets the top 10 most similar songs.
     #first song ignored, as it will be the same as the input
 
@@ -142,15 +119,4 @@ def recommend(song, model, df, n=10):
     top=[]
     for i in range(n):
         top.append(top_titles[i]+' - '+top_artists[i])
-
     return top
-   
-#model = df_to_matrix(df)
-#songs = recommend("Sprinter", model)
-#id_to_df('4rXLjWdF2ZZpXCVTfWcshS')
-#songs = recommend("08YvUaUsZktAG6zEMDwUqO", model)
-
-#print('\n')
-#for i in enumerate(songs):
-#    print(i[0]+1,')\t',i[1])
-
