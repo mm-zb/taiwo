@@ -14,8 +14,8 @@ import random
 import os
 import json
 
-client_id = 'aa3a80f9bcdf41dc959fab26e9f1071d'
-client_secret = '4b9823fad4fc439cbf6b0709e06c21a7'
+client_id = 'id'
+client_secret = 'secret'
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
@@ -39,7 +39,6 @@ class Graph:
         self.adjacency_list[account[0]] = []
       #adds all users to the adjacency list, having no friends initially
       conn.close()
-    print(self.adjacency_list)
 
   def follow(self, user1, user2):
     self.adjacency_list[user1].append(user2)
@@ -72,7 +71,6 @@ def register_account(email, user, pwd, cpwd):
     #executes SQL to copy the whole database
     data = c.fetchall()
     #assigns data to variable
-    print(data)
 
     for i in data:
         if i[0] == user:
@@ -98,8 +96,6 @@ def correct_login(username, password):
     c.execute('SELECT * FROM users')
     data = c.fetchall()
     #executes SQL to copy entire database to a variable
-    print(data)
-    print(username, password), '\n'
 
     conn.close()
     for i in range(len(data)):
@@ -109,13 +105,6 @@ def correct_login(username, password):
             #if the username and hashed password matches then log in
     return 1
     #no username, password combination found
-
-def get_random_song(current):
-    songs = ['Audacity', 'Sprinter', 'Funky Friday', 'Middle Child', 'Look Back at It', 'Jimmy Cooks', 'Thiago Silva', 'Leon the Professional', 'After Hours', 'Seoul', 'The Color Violet', 'Blinding Lights', 'X', 'ROXANNE', 'U Are My High', 'I Gotta Feeling', 'Fair Trade', 'Shine Girl', 'Gold Digger', 'Best Life', 'Vamp Anthem', 'Many Men']
-    song = songs[random.randint(0,len(songs)-1)]
-    while song.split()[0] == current:
-        song = songs[random.randint(0,len(songs)-1)]
-    return song
 
 def add_friend(friend):
     graph = Graph(session.get('friends', None))
@@ -146,31 +135,10 @@ def add_friend(friend):
         session['friends'] = graph.adjacency_list
         return 'Followed '+str(friend)+' successfully'
         #if all checks passed, follow the user
-            
-
-#conn = sqlite3.connect('logins.db')
-#c = conn.cursor()
-
-#c.execute("""DROP TABLE users""")
-#conn.close()
-
-
-#conn = sqlite3.connect('logins.db')
-#c = conn.cursor()
-
-#c.execute("""CREATE TABLE users (
-#    username text,
-#    password text,
-#    email text,
-#    access_token text,
-#    refresh_token text   
-#    ) """)
-#print('new table made')
-#conn.close()
 
 
 app = Flask(__name__)
-app.secret_key = 'jonjo shelvey'
+app.secret_key = 'secret'
 #shh
 
 app.config['SESSION_TYPE'] = 'memcached'
@@ -178,8 +146,8 @@ app.config['SESSION_TYPE'] = 'memcached'
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'nea.recommendation.app@gmail.com'
-app.config['MAIL_PASSWORD'] = 'jpdmlppzhhypkxid'
+app.config['MAIL_USERNAME'] = 'secret'
+app.config['MAIL_PASSWORD'] = 'secret'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -237,7 +205,6 @@ def register_page():
         pwd = (request.form['password'])
         cpwd = (request.form['conf_password'])
         reg = register_account(email, user, pwd, cpwd)
-        #need to code this function, and finish off register page
         if reg == 0:
             error = 'Registered Successfully'
             account = user
@@ -281,29 +248,15 @@ def lyrics_page():
 def recommend_page():
     if request.args.get('id'):
 
-        #df = pd.read_csv('/Users/zbaig/Desktop/NEA/csv/z_data.csv')
         df = add_id_to_df(request.args.get('id'))
         #creates a dataframe, with all previous data, and the song found added on
 
-        #if not song.empty:
-        #    song.to_csv('/Users/zbaig/Desktop/NEA/csv/test_api_song.csv')
-        #    df = pd.concat([df, song], ignore_index=False, axis=0)
-        #    df.to_csv('/Users/zbaig/Desktop/NEA/csv/test_new_df.csv')
-
         model = df_to_matrix(df)
         #converts the dataframe to a cosine similarity matrix
+      
         songs = recommend(request.args.get('id'), model, df)
         #searches through the matrix to find the songs with the most similar values to it
-
-
-
-
-        #COULD PROBABLY MAKE MORE EFFICIENT:      instead of making whole matrix and then binning it after one use, just make a list
-        #that gets the similarity for that one song, compared to all others. then just search through list
-
-
-
-
+      
         return render_template('recommend.html', flag=True, songs=songs)
 
     if request.method == 'POST':
@@ -320,7 +273,7 @@ def recommend_page():
             title = search['tracks']['items'][i]['name']
             id = search['tracks']['items'][i]['id']
             results.append((title, artist, id))
-        print(results)
+
         return render_template('recommend.html', flag=False, results=results)
     return render_template('recommend.html', flag=False, results=None)
 
@@ -433,8 +386,6 @@ def generate_page():
             profile[key] = round((profile[key]/30),3)
         #divide each stat by 30 (to average them), making a taste profile
             
-        
-        print(profile)
         profile['artist'] = 'playlist'
         profile['song_title'] = 'playlist'
         profile['track_id'] = 'playlist'
@@ -447,7 +398,6 @@ def generate_page():
         #joins the taste profile to existing song data
 
         playlist = recommend('playlist',mat,df, 30)
-        print(playlist)
         #runs the recommendation and produces a list of 30 recommended songs
 
         return render_template('generate.html', username=True, token=True, run=True ,songs=playlist)
@@ -505,7 +455,6 @@ def account_page():
         conn.close()
         #runs regardless of whether they have changed their details or not
         #gets the users email to prefill the entry
-        print(response)
 
         return render_template('account.html', account=username, current_email=data[2], response=', '.join(response))
     if username:
@@ -515,7 +464,6 @@ def account_page():
         c.execute(statement)
         data = c.fetchall()[0]
         conn.close()
-        print(data)
         
         return render_template('account.html', account=username, current_email=data[2])
     return render_template('account.html', account=username)
@@ -541,7 +489,6 @@ def unfriend_method():
     graph = Graph(session.get('friends', None))
     #get the adjacency list of friends
 
-    print(session.get('account', None), request.args.get('user'))
     graph.unfollow(session.get('account', None), request.args.get('user'))
     #call the graph data structure's method to unfollow someone
 
@@ -569,7 +516,6 @@ def forgot_password():
             password = ''.join([random.choice(digits) for i in range(10)])
             #if there is an account, generate a random 10 digit string as a password
 
-            print(password)
             account = data[0][0]
 
             msg = Message('Your new password', sender='nea.recommendation.app@gmail.com', recipients=[email])
@@ -614,11 +560,6 @@ def callback():
     c.execute(statement)
     conn.commit()
     conn.close()
-
-    #data = (request_top_songs(token))
-    #print(data)
-    
-    
     return redirect('/login')
 
 
@@ -626,65 +567,6 @@ def callback():
 @app.route('/debug')
 def debug():
     #insert code that needs to run here
-    conn = sqlite3.connect('logins.db')
-    c = conn.cursor()
-    statement = "UPDATE users SET access_token='null' WHERE username='admin'"
-    c.execute(statement)
-    statement = "SELECT * FROM users WHERE username='admin'"
-    c.execute(statement)
-    data = c.fetchall()
-    print(data)
-    conn.close()
-    if False:
-        friends = dict()
-        friends['admin'] = []
-        graph = Graph(friends)
-        graph.save()
-        get_code()
-        session['friends'] = friends
-
-        friends = session.get('friends', None)
-        friends['segrid'] = []
-        graph = Graph(friends)
-        graph = Graph()
-        graph.save()
-        get_code()
-        session['friends'] = friends
-    
-        username = session.get('account', None)
-        conn = sqlite3.connect('logins.db')
-        c = conn.cursor()
-        statement = "SELECT * FROM users WHERE username = '"+username+"'"
-        c.execute(statement)
-        data = c.fetchall()[0]
-        token  = data[-1]
-        data = (request_top_songs(token))
-        songs = clean_top_songs(data)
-        for song in songs:
-            print(song[1]+' - '+song[2])
-
-        friends = session.get('friends', None)
-        friends['zayan'] = []
-        graph = Graph(friends)
-        graph = Graph()
-        graph.save()
-
-        conn = sqlite3.connect('logins.db')
-        c = conn.cursor()
-        statement = "UPDATE users SET spotify = 'null' WHERE username = 'jacob'"
-        #copy token to database
-
-        c.execute(statement)
-        conn.commit()
-        conn.close()
-
-        conn = sqlite3.connect('logins.db')
-        c = conn.cursor()
-
-        c.execute("INSERT INTO users VALUES (?,?,?,?,?)",('admin','admin', 'zayanbaig01@gmail.com', 'null', 'null'))
-        conn.close()
-
-
     return redirect('/')
 
 if __name__=='__main__':
