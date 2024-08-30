@@ -3,26 +3,18 @@ import json
 
 def lyric_to_url(lyric):
     url = 'https://genius.com/api/search/lyric?q='
-
     lyric = lyric.split()
     lyric = '%20'.join(lyric)
-
     url += lyric
     return url 
-
-
 
 def get_songs(url):
     req = Request(
         url=url, 
         headers={'User-Agent': 'Mozilla/5.0'}
     )
-    #genius public api detects and blocks urllib, so need to pretend to come through Mozilla
-
     body = urlopen(req).read()
-
     response = json.loads(body)
-
     return response
 
 def json_to_list(response):
@@ -36,8 +28,6 @@ def json_to_list(response):
         link = response['response']['sections'][0]['hits'][i]['result']['url']
         songs.append((snippet,artist,title,link))
     return songs
-    
-
 
 def main():
     url = lyric_to_url(input())
