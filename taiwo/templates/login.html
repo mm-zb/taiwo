@@ -1,0 +1,61 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Login
+        </title>
+    </head>
+    <br><br><br><br><br><br><br>
+    <body>
+        <table class="navbar-login">
+            <div class="navbar">
+                <tr class="navbar">
+                    <td class="navbar"><a href='/login' class='navbar_active'>SIGN IN</td>
+                    <td class="navbar"><a href="/register" class="navbar">SIGN UP</td>
+                </tr>
+            </div>
+        </table>
+        <br>
+        <br>
+        <form method="post">
+            <table class="data-entry">
+                <tr>
+                    <td><input type="text" name="username" id="user" placeholder="Username"></td>
+                </tr>
+                <tr>
+                    <td><input type="password" name="password" id="pass" placeholder="Password"></td>
+                    <td>&nbsp&nbsp</td>
+                    <td><img src="/static/img/view.png" onclick=passwordVisibility() id="show_hide_button" height="40px" width="40px"></td>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <div class="interactive">
+                <a href="/forgot_password">
+                    <div class="tertiary-text">
+                        Forgot Password?
+                    </div>
+                </a>
+            </div>
+            <input type="submit" value="Log In">
+        </form>
+
+        <br>
+        <div class="error-message">
+            {{error_msg}}
+        </div>
+    </body>
+    <script>
+        function passwordVisibility() {
+            var pwd = document.getElementById("pass");
+            var image = document.getElementById("show_hide_button");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                image.src = "/static/img/hide.png";
+            }else {
+                pwd.type = "password";
+                image.src = "/static/img/view.png";
+            }
+        }
+    </script>
+</html>

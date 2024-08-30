@@ -1,0 +1,72 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Account
+        </title>
+        <table class="navbar">
+            <tr class="navbar">
+                <div class="navbar">
+                    <td class="navbar"><a href="/stats" class="navbar">STATS</a></td>
+                    <td class="navbar"><a href="/lyrics" class="navbar">LYRICS</a></td>
+                    <td class="navbar"><a href="/recommend" class="navbar">RECOMMEND</a></td>
+                    <td class="navbar"><a href="/generate" class="navbar">GENERATE</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends" class="navbar">FRIENDS</a></td>
+                    <td class="navbar"><a href="/account" class="navbar_active">ACCOUNT</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <br>
+    <body>
+        {% if account==False %}
+            Not logged in
+            {% else %}
+            <table class="account">
+                <tr>
+                    <td>
+                        <form id="change-email" method="post">
+                            <table class="data-entry">
+                                <tr>
+                                    <td><input type="email" id="new-email" name="new_email" placeholder="{{current_email}}"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" id="current-password" placeholder="Current Password" name="current_password"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" id="new-password" name="new_password" placeholder="New Password"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" id="confirm-password" name="confirm_password" placeholder="Confirm New Password"></td>
+                                </tr>
+                            </table>
+                            <button type="submit">Save Changes</button> 
+                        </form>
+                    </td>
+                    <td>
+                        <a href="/spotify">
+                            <div class="secondary-text">
+                                Click below to connect to your Spotify account!
+                                <br><br><br>
+                                <img class="interactive" src="/static/img/spotify_logo.png" height="75px" width="75px">
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <div class="error-message">
+                {{response}}
+            </div>
+            <br><br><br>
+            <div class="secondary-text">
+                You are currently logged into {{account}}
+            </div>         
+            <a href="/logout">
+                <button id="logout">Logout</button>
+            </a> 
+
+        {% endif %}
+    </body>
+</html>

@@ -1,0 +1,68 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Friends
+        </title>
+        <table class="navbar">
+            <tr class="navbar">
+                <div class="navbar">
+                    <td class="navbar"><a href="/stats" class="navbar">STATS</a></td>
+                    <td class="navbar"><a href="/lyrics" class="navbar">LYRICS</a></td>
+                    <td class="navbar"><a href="/recommend" class="navbar">RECOMMEND</a></td>
+                    <td class="navbar"><a href="/generate" class="navbar">GENERATE</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends" class="navbar_active">FRIENDS</a></td>
+                    <td class="navbar"><a href="/account" class="navbar">ACCOUNT</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <br>
+    <body>
+        {% if account==False %}
+            Not logged in
+        {% else %}
+
+        <table class="friends">
+            <tr>
+                <td>
+                    <div class="secondary-text">
+                        Add friends for {{account}}!
+                    </div>
+                    <form method="post" id="friends-search">
+                        <input type="text" id="search" name="friend-username" placeholder="Friend Username">
+                        <input type="submit">
+                    </form>
+                    <div class="error-message">
+                        {{error_msg}}
+                    </div>
+                </td>
+                <td class="unfollow">
+                    {% if friends %}
+                        <div class="secondary-text">Click on a username to remove a friend!</div>
+                        <ul class="unfollow">
+                            {% for item in friends %}
+                                    <li class="interactive">
+                                        <a class="unfollow" href="/unfollow?user={{item}}">
+                                            <div class="tertiary-text">
+                                                {{item}}
+                                            </div>
+                                        </a>
+                                    </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="secondary-text">
+                            {{account}} does not have any friends yet
+                            <br>
+                            Add some using the box above!
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        {% endif %}
+    </body>
+</html>

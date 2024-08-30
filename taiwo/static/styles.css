@@ -1,0 +1,168 @@
+@import url(https://fonts.googleapis.com/earlyaccess/opensanshebrew.css);
+
+a {
+    text-decoration: none;
+}
+
+.navbar{
+    font-family: 'Open Sans Hebrew', serif;
+    font-weight: 600;
+    font-size: 36px;
+}
+
+table.navbar-login{
+    margin-left: auto;
+    margin-right: auto;
+    width:50%;
+    height:15%;
+    table-layout: auto;
+}
+
+table.navbar {
+    width:100%;
+    height:15%;
+    table-layout: auto;
+}
+
+a.navbar{
+    text-decoration: none;
+    color:#F5FCCD;
+    opacity:50%;
+}
+
+a.navbar_active{
+    text-decoration:underline;
+    color:#F5FCCD;
+    opacity:100%;
+}
+
+.error-message {
+    color:rgb(255, 135, 135);
+    size:14px;
+}
+
+td {
+    text-align: center;
+}
+
+td.navbar-edge {
+    border-left: 1px solid #ffffff;
+    transition: transform 0.2s ease-in-out;
+}
+
+table.data-entry{
+    text-align:center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    font-family: 'Open Sans Hebrew', serif;
+    font-size:36px;
+    color:#000000;
+  }
+
+body {
+    font-family: 'Open Sans Hebrew', serif;
+    background-color: #336A6F;
+    color: #ffffff;
+    text-align: center;
+}
+
+.secondary-text {
+    color: #ffffff;
+    font-family: 'Open Sans Hebrew', serif;
+    font-weight: 400;
+    font-size: 23px;
+}
+
+.tertiary-text {
+    color: #f8ffd6;
+    font-family: 'Open Sans Hebrew', serif;
+    font-weight: 200;
+    font-size: 16px;
+}
+
+table.account {
+    width:100%;
+    table-layout:fixed;
+}
+
+table.friends {
+    width:100%;
+    table-layout:fixed;
+}
+
+ul.unfollow {
+    list-style-type: none;
+}
+
+.overflow {
+    overflow: scroll;
+    height:80%;
+}
+
+p, li {
+    font-size: 16px; 
+    color: white;
+}
+
+img.artist {
+    border-radius:20px;
+    height:120px;
+    width:120px;
+}
+
+img.song {
+    border-radius:10px;
+    height:80px;
+    width:80px;
+}
+
+button, input{
+    border-radius: 30px;
+    border: 0;
+    padding: 15px 50px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.interactive{
+    transition:transform 0.2s ease-in-out;
+}
+
+.ralign {
+        position: absolute;
+        right: 0px;
+        width:auto;
+        padding: 30px;
+}
+
+.center {
+    position:absolute;
+    right: auto;
+    left:auto;
+    width:auto;
+}
+
+td.navbar{
+    border-radius: 30px;
+    border: 0;
+    padding: 15px 20px;
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover, input:hover, td.navbar:hover, td.navbar-edge:hover, .interactive:hover{
+    transform: scale(1.1);
+}
+
+h2 {
+    color: #86B5A4;
+}
+
+h3 {
+    color: #B9D9B7;
+}
+
+h4 {
+    color: #F5FCCD;
+}

@@ -1,0 +1,53 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Recommend
+        </title>
+        <table class="navbar">
+            <tr class="navbar">
+                <div class="navbar">
+                    <td class="navbar"><a href="/stats" class="navbar">STATS</a></td>
+                    <td class="navbar"><a href="/lyrics" class="navbar">LYRICS</a></td>
+                    <td class="navbar"><a href="/recommend" class="navbar_active">RECOMMEND</a></td>
+                    <td class="navbar"><a href="/generate" class="navbar">GENERATE</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends" class="navbar">FRIENDS</a></td>
+                    <td class="navbar"><a href="/account" class="navbar">ACCOUNT</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <br>
+    <body>
+        {% if flag %}
+            <br><br>
+            <ul class="unfollow">
+                {% for song in songs %}
+                    <li>{{song}}</li>
+                    <br>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+            <form method="post" id="song-search">
+                <input type="text" id="search" name="song-name" placeholder="Enter Song Name">
+                <input type="submit">
+            </form>
+            {% if results %}
+                <ul class="unfollow">
+                <br>
+                {% for song in results %}
+                    <a href="/recommend?id={{song[2]}}">
+                        <div class="interactive">
+                            <li>{{song[0]}} - {{song[1]}}</li>
+                            <br>
+                        </div>
+                    </a>
+                
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    </body>
+</html>

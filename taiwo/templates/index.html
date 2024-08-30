@@ -1,0 +1,40 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Home
+        </title>
+        <table class="navbar">
+            <tr>
+                <div class="navbar">
+                    <td><a href="/stats">Spotify Stats</a></td>
+                    <td><a href="/lyrics">Lyric Finder</a></td>
+                    <td><a href="/recommend">Recommend a Song</a></td>
+                    <td><a href="/generate">Playlist Generator</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends">Friends</a></td>
+                    <td><a href="/login">Login</a></td>
+                    <td><a href="/account">Account</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <hr>
+    <body>
+        <h1>
+            First Test
+        </h1>
+        <br>
+        <p>Press this button for a random song</p>
+        <form method="GET">
+            <input type="hidden" name="hidden_input" value={{song_name}}/>
+            <button type="submit">Click Me!</button>
+        </form>
+        <p>{{song_name}}</p>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <a href="/debug">
+            <button>Debug</button>
+        </a>
+    </body>
+
+</html>

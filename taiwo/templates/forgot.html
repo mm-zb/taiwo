@@ -1,0 +1,53 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Forgot Password
+        </title>
+    </head>
+    <br><br><br><br><br><br><br><br><br>
+    <body>
+        <p>
+            Forgotten your password? Reset it here!
+            Enter the email associated with your account
+        </p>
+        <br>
+        <form method="post">
+            <table class="data-entry">
+                <tr>
+                    <td><input type="email" name="email" placeholder="Email" id="email"></td>
+                </tr>
+            </table>
+            <br>
+            <a href="/login">
+                <div class="secondary-text">
+                    Back to Login
+                </div>
+            </a>
+            <br>
+            <input type="submit" value="Send Email">
+            <br>
+            <br>
+            <div class="error-message">
+                {{error_msg}}
+            </div>
+
+        </form>
+    </body>
+    <script>
+        function passwordVisibility() {
+            var pwd = document.getElementById("pass");
+            var cpwd = document.getElementById("conf_pass");
+            var image = document.getElementById("show_hide_button");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                cpwd.type = "text";
+                image.src = "/static/img/hide.png";
+            }else {
+                pwd.type = "password";
+                cpwd.type = "password";
+                image.src = "/static/img/view.png";
+            }
+        }
+    </script>
+</html>

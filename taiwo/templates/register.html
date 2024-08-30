@@ -1,0 +1,65 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Register
+        </title>
+    </head>
+    <br><br><br><br><br><br><br>
+    <body>
+        <table class="navbar-login">
+            <div class="navbar">
+                <tr class="navbar">
+                    <td class="navbar"><a href='/login' class='navbar'>SIGN IN</td>
+                    <td class="navbar"><a href="/register" class="navbar_active">SIGN UP</td>
+                </tr>
+            </div>
+        </table>
+        <br>
+        <br>
+        <form method="post">
+            <table class="data-entry">
+                <tr>
+                    <td><input type="email" name="email" placeholder="Email" id="email" value={{email}} ></td>
+                </tr>
+                <tr>
+                    <td><input type="text" name="username" placeholder="Username" id="user" value={{username}} ></td>
+                </tr>
+                <tr>
+                    <td><input type="password" name="password" id="pass" placeholder="Password"></td>
+                    <td>&nbsp&nbsp</td>
+                    <td><img src="/static/img/view.png" onclick=passwordVisibility() id="show_hide_button" height="40px" width="40px"></td>
+                </tr>
+                <tr>
+                    <td><input type="password" name="conf_password" id="conf_pass" placeholder="Confirm Password"></td>
+                </tr>
+            </table>
+                
+            <br>
+            <br>
+            <input type="submit" value="Register">
+            <br>
+            <br>
+            <div class="error-message">
+                {{error_msg}}
+            </div>
+
+        </form>
+    </body>
+    <script>
+        function passwordVisibility() {
+            var pwd = document.getElementById("pass");
+            var cpwd = document.getElementById("conf_pass");
+            var image = document.getElementById("show_hide_button");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                cpwd.type = "text";
+                image.src = "/static/img/hide.png";
+            }else {
+                pwd.type = "password";
+                cpwd.type = "password";
+                image.src = "/static/img/view.png";
+            }
+        }
+    </script>
+</html>

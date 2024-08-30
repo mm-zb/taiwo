@@ -1,0 +1,42 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Generate
+        </title>
+        <table class="navbar">
+            <tr class="navbar">
+                <div class="navbar">
+                    <td class="navbar"><a href="/stats" class="navbar">STATS</a></td>
+                    <td class="navbar"><a href="/lyrics" class="navbar">LYRICS</a></td>
+                    <td class="navbar"><a href="/recommend" class="navbar">RECOMMEND</a></td>
+                    <td class="navbar"><a href="/generate" class="navbar_active">GENERATE</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends" class="navbar">FRIENDS</a></td>
+                    <td class="navbar"><a href="/account" class="navbar">ACCOUNT</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <br>
+    <body>
+        {% if username==False %}
+            Not logged in
+        {% elif token==False %}
+            Not connected to Spotify
+        {% elif run==False %}
+            Generate a playlist based on your Spotify listening data
+            <form method="post">
+                <input type="submit" value="Generate Playlist!">
+            </form>
+        {% else %}
+            <div class="overflow">
+                <ul class="unfollow">
+                    {% for song in songs %}
+                    <li>{{song}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </body>
+</html>

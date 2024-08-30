@@ -1,0 +1,96 @@
+<html>
+    <link rel="stylesheet" href="/static/styles.css">
+    <head>
+        <title>
+            NEA Stats
+        </title>
+        <table class="navbar">
+            <tr class="navbar">
+                <div class="navbar">
+                    <td class="navbar"><a href="/stats" class="navbar_active">STATS</a></td>
+                    <td class="navbar"><a href="/lyrics" class="navbar">LYRICS</a></td>
+                    <td class="navbar"><a href="/recommend" class="navbar">RECOMMEND</a></td>
+                    <td class="navbar"><a href="/generate" class="navbar">GENERATE</a></td>
+                    
+                    <td class="navbar-edge"><a href="/friends" class="navbar">FRIENDS</a></td>
+                    <td class="navbar"><a href="/account" class="navbar">ACCOUNT</a></td>
+                </div>
+            </tr>
+        </table>
+    </head>
+    <br>
+    <body>
+
+        {% if username==False %}
+            Not logged in
+        {% elif token==False %}
+            Not connected to Spotify
+        {% else %}
+            Your top genre is {{genre}}!
+            <div class="ralign">
+                <ul class="unfollow">
+                    <div class="secondary-text">
+                        Click a friend to see their stats!
+                    </div>
+                    {% for friend in friends %}
+                            <li>
+                                <a href="/stats?friend={{friend}}">
+                                    <div class="interactive">
+                                        <div class="secondary-text">
+                                            {{friend}}
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <table class="friends">
+                <tr>
+                    <td>
+                        <div class="center">
+                            Your top 5 artists are...
+                        </div>
+                        <br><br>
+                    </td>
+                </tr>
+                <tr>
+                    {% for artist in artists %}
+                        <td>
+                            <div class="interactive">
+                                <a href="{{artist[1]}}">
+                                    <img src="{{artist[2]}}" class="artist">
+                                    <br>
+                                    <div class="tertiary-text">
+                                        {{artist[0]}}
+                                    </div>
+                                </a>
+                            </div>
+                        </td>
+                    {% endfor %}
+                    <td>
+                    </td>
+                </tr>
+                <tr><td><br><br><br></td></tr>
+                <tr>
+                    <td>Your top songs are...</td>
+                </tr>
+                <tr>   
+                    {% for song in songs %}
+                        <td>
+                            <div class="interactive">
+                                <a href="{{song[2]}}">
+                                    <img src="{{song[3]}}" class="song">
+                                    <br>
+                                        <div class="tertiary-text">
+                                            {{song[0]}}
+                                        </div>
+                                </a>
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            </table>
+        {% endif %}
+    </body>
+</html>
