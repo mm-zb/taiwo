@@ -4,17 +4,12 @@ import base64
 import webbrowser
 import sqlite3
 
-#on zayanbaig spotify account
-#the one i use to listen to songs
-
-code='AQCRLcUZdpzwfePVp1CheZcCIJ8OnC0y6B3g_xlZPRgkaCfLC_57-tByCrIC39o9oRdYBbC8_uxPyNX9KvsGCuQMNOzi4dxDCbxvfejwyL3vJtz-j7jHpYBxrS0EfOn6CDVGWL2NHzDezaZAdt5YnpFJyig3pzgJXJhFJBm1HBvHTczGxbSc6OMWQ3eJjeFSLNt1Esk'
-
-client_id = 'd70f2af9728940bca6d4dced4ec393d8'
-client_secret = '0f8fe05ce55349b687156b8ebcaa6840'
+client_id = 'id'
+client_secret = 'secret'
 
 def get_code():
     auth_headers = {
-        "client_id": 'd70f2af9728940bca6d4dced4ec393d8',
+        "client_id": 'id',
         "response_type": "code",
         "redirect_uri": "http://localhost:80/callback",
         "scope": "user-library-read user-top-read user-read-recently-played user-library-modify"
@@ -45,6 +40,7 @@ def refresh_access(user):
     c.execute('SELECT * FROM users WHERE username="'+str(user)+'"')
     data = c.fetchall()[0]
     #executes SQL to get user's data
+    
     conn.close()
 
     refresh_token = data[4]
@@ -56,11 +52,12 @@ def refresh_access(user):
 
     token_data = {
         "grant_type": "refresh_token",
-        "client_id": "d70f2af9728940bca6d4dced4ec393d8",
+        "client_id": "id",
         "refresh_token": refresh_token,
         "redirect_uri": "http://localhost:80/callback"
     }
     #sets up headers and payload for JSON request to api for refreshing of token
+    
     r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
     print(r)
     conn = sqlite3.connect('logins.db')
@@ -68,15 +65,3 @@ def refresh_access(user):
     c.execute('UPDATE users SET access_token = "'+str(r)+'" WHERE username = "'+str(user)+'"')
     #executes SQL to add the updated token to database
     conn.close()
-
-
-
-if False:
-
-    code = get_code()
-
-    r =get_token(code)
-    json = r.json()
-    print(r)
-    print('/n/n/n/n/n/n/n/n/n/n')
-    print(json)
