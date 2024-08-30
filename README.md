@@ -21,5 +21,5 @@ Taiwo is named after Taiwo Awoniyi, an inspiration for this project. As a strike
 
 # Notes
 Github did not like the size of the original csv file, so I had to make it more reasonable. For this, the song recommendations may be less than perfect.
-A demonstration of how the app works can be found here: https://youtu.be/O6YQwn4OzvI?feature=shared
+A demonstration of how the app works can be found here: https://youtube.com/playlist?list=PLOo_PcdMTLsSedZYSdCvgYruDSXMxYnWf
 If you find any bugs or errors in my code, please do let me know: zayanbaig01@gmail.com
