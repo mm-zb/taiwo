@@ -3,14 +3,9 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 import json
 
-#testing spotify account details:
-#robisi6374@rentaen.com
-#abc12345678
 
-code='AQCRLcUZdpzwfePVp1CheZcCIJ8OnC0y6B3g_xlZPRgkaCfLC_57-tByCrIC39o9oRdYBbC8_uxPyNX9KvsGCuQMNOzi4dxDCbxvfejwyL3vJtz-j7jHpYBxrS0EfOn6CDVGWL2NHzDezaZAdt5YnpFJyig3pzgJXJhFJBm1HBvHTczGxbSc6OMWQ3eJjeFSLNt1Esk'
-
-client_id = 'd70f2af9728940bca6d4dced4ec393d8'
-client_secret = '0f8fe05ce55349b687156b8ebcaa6840'
+client_id = 'id'
+client_secret = 'secret'
 
 def request_top_songs(token):
     print(token)
@@ -20,7 +15,6 @@ def request_top_songs(token):
     )
 
     body = urlopen(req).read()
-
     response = json.loads(body)
     return response
 
@@ -31,9 +25,7 @@ def request_top_artists(token):
     )
     
     body = urlopen(req).read()
-
     response = json.loads(body)
-
     return response
 
 def clean_top_songs(data):
