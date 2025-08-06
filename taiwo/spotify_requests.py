@@ -2,9 +2,10 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 import json
 
+import config
 
-client_id = 'id'
-client_secret = 'secret'
+client_id = config.SPOTIFY_ID
+client_secret = config.SPOTIFY_SECRET
 
 def request_top_songs(token):
     print(token)

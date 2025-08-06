@@ -4,8 +4,10 @@ import base64
 import webbrowser
 import sqlite3
 
-client_id = 'id'
-client_secret = 'secret'
+import config
+
+client_id = config.SPOTIFY_ID
+client_secret = config.SPOTIFY_SECRET
 
 def get_code():
     auth_headers = {

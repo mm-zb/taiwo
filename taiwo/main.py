@@ -2,6 +2,7 @@ from recommender import recommend, add_id_to_df, df_to_matrix
 from genius import lyric_to_url, get_songs, json_to_list
 from spotify_auth import get_code, get_token, refresh_access
 from spotify_requests import request_top_songs, clean_top_songs, request_top_artists
+import config
 
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
@@ -12,8 +13,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import random
 
-client_id = 'id'
-client_secret = 'secret'
+client_id = config.SPOTIFY_ID
+client_secret = config.SPOTIFY_SECRET
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 

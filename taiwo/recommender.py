@@ -5,10 +5,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-import json
 
-client_id = 'id'
-client_secret = 'secret'
+import config
+
+client_id = config.SPOTIFY_ID
+client_secret = config.SPOTIFY_SECRET
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
