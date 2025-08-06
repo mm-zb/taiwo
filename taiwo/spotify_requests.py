@@ -1,4 +1,3 @@
-import requests
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 import json

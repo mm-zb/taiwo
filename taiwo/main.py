@@ -1,4 +1,4 @@
-from recommender import recommend, add_id_to_df, df_to_matrix, id_to_df
+from recommender import recommend, add_id_to_df, df_to_matrix
 from genius import lyric_to_url, get_songs, json_to_list
 from spotify_auth import get_code, get_token, refresh_access
 from spotify_requests import request_top_songs, clean_top_songs, request_top_artists
@@ -11,8 +11,6 @@ import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import random
-import os
-import json
 
 client_id = 'id'
 client_secret = 'secret'
