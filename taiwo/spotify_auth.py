@@ -9,9 +9,9 @@ import config
 client_id = config.SPOTIFY_ID
 client_secret = config.SPOTIFY_SECRET
 
-def get_code():
+def get_code() -> None:
     auth_headers = {
-        "client_id": 'id',
+        "client_id": client_id,
         "response_type": "code",
         "redirect_uri": "http://localhost:80/callback",
         "scope": "user-library-read user-top-read user-read-recently-played user-library-modify"
@@ -19,7 +19,10 @@ def get_code():
 
     webbrowser.open("https://accounts.spotify.com/authorize?" + urlencode(auth_headers))
 
-def get_token(code):
+def get_token(code: str) -> tuple[str, str]:
+    # code: client auth code for spotify account
+    # return: tuple of the access and refresh token
+
     encoded_credentials = base64.b64encode(client_id.encode() + b':' + client_secret.encode()).decode("utf-8")
 
     token_headers = {
@@ -33,12 +36,16 @@ def get_token(code):
         "redirect_uri": "http://localhost:80/callback"
     }
     r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    return [r.json()["access_token"],r.json()["refresh_token"]]
+    parsed = r.json()
+    return (parsed["access_token"], parsed["refresh_token"])
 
-def refresh_access(user):
+def refresh_access(user: str) -> None:
+    # user: username in a string
+    # return: None
+    
     conn = sqlite3.connect('logins.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM users WHERE username="'+str(user)+'"')
+    c.execute('SELECT * FROM users WHERE username="'+user+'"')
     data = c.fetchall()[0]
     #executes SQL to get user's data
     
@@ -53,7 +60,7 @@ def refresh_access(user):
 
     token_data = {
         "grant_type": "refresh_token",
-        "client_id": "id",
+        "client_id": client_id,
         "refresh_token": refresh_token,
         "redirect_uri": "http://localhost:80/callback"
     }
