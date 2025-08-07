@@ -1,3 +1,15 @@
+# Important: App is No Longer Functional
+
+As of late 2024, Spotify has implemented significant restrictions on their Web API. This has resulted in the removal of key endpoints that this application relies on, making it non-functional for new users and applications.
+
+For more information, please see the official Spotify Developer documentation: [https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api)
+
+Due to these changes, this project has been officially **deprecated** and will no longer be maintained.
+
+## To Run
+Install dependencies in the `requirements.txt` file
+`cd` into the `taiwo` directory and run `./run` to open the web application
+
 ## taiwo
 # What?
 A song recommendation tool web application, created primarily with Python, through Flask.
@@ -22,4 +34,3 @@ Taiwo is named after Taiwo Awoniyi, an inspiration for this project. As a strike
 # Notes
 Github did not like the size of the original csv file, so I had to make it more reasonable. For this, the song recommendations may be less than perfect.
 A demonstration of how the app works can be found here: https://youtube.com/playlist?list=PLOo_PcdMTLsSedZYSdCvgYruDSXMxYnWf
-If you find any bugs or errors in my code, please do let me know: zayanbaig01@gmail.com
