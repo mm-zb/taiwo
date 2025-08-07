@@ -2,12 +2,15 @@ from recommender import recommend, update_csv, df_to_matrix
 from genius import search_lyrics
 from spotify_auth import get_code, get_token, refresh_access
 from spotify_requests import request_top_songs, clean_top_songs, request_top_artists
+from friends import Graph
 import config
 
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
 from flask_mail import Mail, Message
-import random, sqlite3, pickle
+import random
+import sqlite3
+import pickle
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -17,40 +20,6 @@ client_id = config.SPOTIFY_ID
 client_secret = config.SPOTIFY_SECRET
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
-
-class Graph: 
-  #directed graph to form a friends network
-  #using a directed graph, which makes it a following system rather than a friends system
-  def __init__(self, existing=None):
-    if existing:
-      self.adjacency_list = existing
-      #allows the graph to be stored in a text file, and then retrieved later
-    else:
-      self.adjacency_list = {}
-      conn = sqlite3.connect('logins.db')
-      c = conn.cursor()
-      #creates empty adjacency list if no friends system in place
-  
-      c.execute('SELECT * FROM users')
-      data = c.fetchall()
-      #copies the database to a variable
-      for account in data:
-        self.adjacency_list[account[0]] = []
-      #adds all users to the adjacency list, having no friends initially
-      conn.close()
-
-  def follow(self, user1, user2):
-    self.adjacency_list[user1].append(user2)
-    #user1 adds user2 as a friend 
-
-  def unfollow(self, user1, user2):
-    self.adjacency_list[user1].remove(user2)
-    #user1 removes user2 as a friend
-
-  def save(self):
-    with open('friends_list.pkl', 'wb') as fh:
-      pickle.dump(self.adjacency_list, fh)
-    #writes current user data to a .pkl file
 
 def register_account(email, user, pwd, cpwd):
     if not user or not pwd or not cpwd or not email:
