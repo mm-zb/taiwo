@@ -1,40 +1,53 @@
 from urllib.request import urlopen, Request
+from urllib.parse import quote
 import json
+def search_lyrics(lyrics: str) -> list:
+    # lyrics: a sentence
+    # return: list of 4-tuples of strings
 
-def lyric_to_url(lyric):
-    url = 'https://genius.com/api/search/lyric?q='
-    lyric = lyric.split()
-    lyric = '%20'.join(lyric)
-    url += lyric
-    return url 
+    def find_url(lyrics: str) -> str:
+        # lyrics: a sentence
+        # return: a url 
+        url = 'https://genius.com/api/search/lyric?q='
+        return url + quote(lyrics)
 
-def get_songs(url):
-    req = Request(
-        url=url, 
-        headers={'User-Agent': 'Mozilla/5.0'}
-    )
-    body = urlopen(req).read()
-    response = json.loads(body)
-    return response
+    def request(url: str) -> dict:
+        # url: a url
+        # return: complex json dictionary
 
-def json_to_list(response):
-    if not response['response']['sections'][0]['hits']:
-        return []
-    songs = list()
-    for i in range(len(response['response']['sections'][0]['hits'])):
-        snippet = response['response']['sections'][0]['hits'][i]['highlights'][0]['value']
-        artist = response['response']['sections'][0]['hits'][i]['result']['primary_artist']['name']
-        title = response['response']['sections'][0]['hits'][i]['result']['title']
-        link = response['response']['sections'][0]['hits'][i]['result']['url']
-        songs.append((snippet,artist,title,link))
+        req = Request(
+            url=url, 
+            headers={
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+                # in case of genius changing permissions again:
+                # navigate to 'https://genius.com/api/search/lyric?q=whos%20calling' in browser
+                # inspect element, go to network, rerequest
+                # copy user-agent into this header
+                }
+        )
+
+        body = urlopen(req).read()
+        response = json.loads(body)
+        return response
+
+    def parse_response(response: dict) -> list:
+        # response: complex json dictionary
+        # return: list of 4-tuples of strings
+
+        hits = response['response']['sections'][0]['hits']
+        if not hits:
+            return []
+        
+        songs = [(
+                    hit['highlights'][0]['value'],              #snippet
+                    hit['result']['primary_artist']['name'],    #artist
+                    hit['result']['title'],                     #title
+                    hit['result']['url']                        #link
+                ) for hit in hits]
+        return songs
+    
+    url = find_url(lyrics)
+    response = request(url)
+    songs = parse_response(response)
     return songs
-
-def main():
-    url = lyric_to_url(input())
-    response = get_songs(url)
-    songs = json_to_list(response)
-    if not songs:
-        print('No results')
-    else:
-        for song in enumerate(songs):
-            print((str(song[0]+1)+')  '+song[1][2]+' - '+song[1][1]+'\n'+song[1][3]+'\n'+song[1][0]+'\n'))
+    
