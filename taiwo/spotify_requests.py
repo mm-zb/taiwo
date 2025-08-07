@@ -10,7 +10,7 @@ client_secret = config.SPOTIFY_SECRET
 def request(url, token):
     req = Request(
         url=url, 
-        headers={"Authorization":'Bearer '+str(token)}
+        headers={"Authorization":f"Bearer {str(token)}"}
     )
 
     body = urlopen(req).read()
@@ -23,12 +23,12 @@ def request_top_songs(token, limit=30):
 def request_top_artists(token, limit=5):
     return request(f"https://api.spotify.com/v1/me/top/artists?limit={limit}", token)
 
-def clean_top_songs(data):
-    songs = list()
-    for i in range(30):
-        id = data['items'][i]['id']
-        artist = data['items'][i]['artists'][0]['name']
-        name = data['items'][i]['name']
-        popularity = data['items'][i]['popularity']
-        songs.append((id,name,artist,popularity))
-    return songs
+def clean_top_songs(songs, limit=30):
+
+    top_songs = [(
+        song['id'],                 #song_id
+        song['name'],               #name
+        song['artists'][0]['name'], #artist
+        song['popularity']          #popularity
+    ) for song in songs['items']]
+    return top_songs
