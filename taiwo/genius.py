@@ -11,10 +11,12 @@ def lyric_to_url(lyrics: str) -> str:
 def get_songs(url: str) -> dict:
     # url: a url
     # return: complex json dictionary
+
     req = Request(
         url=url, 
         headers={'User-Agent': 'Mozilla/5.0'}
     )
+
     body = urlopen(req).read()
     response = json.loads(body)
     return response
@@ -22,15 +24,17 @@ def get_songs(url: str) -> dict:
 def json_to_list(response: dict) -> list:
     # response: complex json dictionary
     # return: list of 4-tuples of strings
-    if not response['response']['sections'][0]['hits']:
+
+    hits = response['response']['sections'][0]['hits']
+    if not hits:
         return []
-    songs = list()
-    for i in range(len(response['response']['sections'][0]['hits'])):
-        snippet = response['response']['sections'][0]['hits'][i]['highlights'][0]['value']
-        artist = response['response']['sections'][0]['hits'][i]['result']['primary_artist']['name']
-        title = response['response']['sections'][0]['hits'][i]['result']['title']
-        link = response['response']['sections'][0]['hits'][i]['result']['url']
-        songs.append((snippet,artist,title,link))
+    
+    songs = [(
+                hit['highlights'][0]['value'],              #snippet
+                hit['result']['primary_artist']['name'],    #artist
+                hit['result']['title'],                     #title
+                hit['result']['url']                        #link
+            ) for hit in hits]
     return songs
 
 def main():
