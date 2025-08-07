@@ -6,12 +6,17 @@ import sqlite3
 
 import config
 
-client_id = config.SPOTIFY_ID
-client_secret = config.SPOTIFY_SECRET
+CLIENT_ID = config.SPOTIFY_ID
+CLIENT_SECRET = config.SPOTIFY_SECRET
+ENCODED_CREDENTIALS = base64.b64encode(CLIENT_ID.encode() + b':' + CLIENT_SECRET.encode()).decode("utf-8")
+TOKEN_HEADERS = {
+        "Authorization": "Basic " + ENCODED_CREDENTIALS,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
 
 def get_code() -> None:
     auth_headers = {
-        "client_id": client_id,
+        "client_id": CLIENT_ID,
         "response_type": "code",
         "redirect_uri": "http://localhost:80/callback",
         "scope": "user-library-read user-top-read user-read-recently-played user-library-modify"
@@ -23,19 +28,12 @@ def get_token(code: str) -> tuple[str, str]:
     # code: client auth code for spotify account
     # return: tuple of the access and refresh token
 
-    encoded_credentials = base64.b64encode(client_id.encode() + b':' + client_secret.encode()).decode("utf-8")
-
-    token_headers = {
-        "Authorization": "Basic " + encoded_credentials,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-
     token_data = {
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": "http://localhost:80/callback"
     }
-    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
+    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=TOKEN_HEADERS)
     parsed = r.json()
     return (parsed["access_token"], parsed["refresh_token"])
 
@@ -49,26 +47,16 @@ def refresh_access(user: str) -> None:
     data = c.fetchall()[0]
     #executes SQL to get user's data
     
-    conn.close()
 
     refresh_token = data[4]
-    encoded_credentials = base64.b64encode(client_id.encode() + b':' + client_secret.encode()).decode("utf-8")
-    token_headers = {
-        "Authorization": "Basic " + encoded_credentials,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-
     token_data = {
         "grant_type": "refresh_token",
-        "client_id": client_id,
+        "client_id": CLIENT_ID,
         "refresh_token": refresh_token,
-        "redirect_uri": "http://localhost:80/callback"
     }
     #sets up headers and payload for JSON request to api for refreshing of token
     
-    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    conn = sqlite3.connect('logins.db')
-    c = conn.cursor()
+    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=TOKEN_HEADERS)
     c.execute('UPDATE users SET access_token = "'+str(r)+'" WHERE username = "'+str(user)+'"')
     #executes SQL to add the updated token to database
     conn.close()
