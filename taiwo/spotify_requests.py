@@ -17,11 +17,11 @@ def request(url, token):
     response = json.loads(body)
     return response
 
-def request_top_songs(token):
-    return request("https://api.spotify.com/v1/me/top/tracks?limit=30", token)
+def request_top_songs(token, limit=30):
+    return request(f"https://api.spotify.com/v1/me/top/tracks?limit={limit}", token)
 
-def request_top_artists(token):
-    return request("https://api.spotify.com/v1/me/top/artists?limit=5", token)
+def request_top_artists(token, limit=5):
+    return request(f"https://api.spotify.com/v1/me/top/artists?limit={limit}", token)
 
 def clean_top_songs(data):
     songs = list()
