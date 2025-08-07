@@ -33,7 +33,6 @@ def get_token(code):
         "redirect_uri": "http://localhost:80/callback"
     }
     r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    print(r)
     return [r.json()["access_token"],r.json()["refresh_token"]]
 
 def refresh_access(user):
@@ -61,7 +60,6 @@ def refresh_access(user):
     #sets up headers and payload for JSON request to api for refreshing of token
     
     r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    print(r)
     conn = sqlite3.connect('logins.db')
     c = conn.cursor()
     c.execute('UPDATE users SET access_token = "'+str(r)+'" WHERE username = "'+str(user)+'"')
