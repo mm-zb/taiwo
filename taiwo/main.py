@@ -60,10 +60,6 @@ def home():
 @app.route('/index', methods=['GET'])
 def index_page():
     return redirect('/login')
-    if request.method == 'GET':
-        if len(request.url.split('=')) > 1:
-            return render_template('index.html', song_name=get_random_song(request.url.split('=')[1]))
-    return render_template('index.html', song_name='')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
