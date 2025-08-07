@@ -43,13 +43,16 @@
                         <div class="secondary-text">Click on a username to remove a friend!</div>
                         <ul class="unfollow">
                             {% for item in friends %}
-                                    <li class="interactive">
-                                        <a class="unfollow" href="/unfollow?user={{item}}">
+                                <li class="interactive">
+                                    <form action="/unfollow" method="post">
+                                        <input type="hidden" name="user" value="{{ item }}">
+                                        <button type="submit" class="unfollow-button">
                                             <div class="tertiary-text">
-                                                {{item}}
+                                                {{ item }}
                                             </div>
-                                        </a>
-                                    </li>
+                                        </button>
+                                    </form>
+                                </li>
                             {% endfor %}
                         </ul>
                     {% else %}
