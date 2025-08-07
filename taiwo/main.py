@@ -75,7 +75,7 @@ def correct_login(username, password):
     #no username, password combination found
 
 def add_friend(friend):
-    graph = Graph(session.get('friends', None))
+    graph = Graph()
     user = session.get('account', None)
     #assign the user's username, and the global friends list to variables
 
@@ -147,13 +147,7 @@ def login_page():
         if log==0:
             e = 'Logged into '+str(u)
             session['account'] = str(u)
-
-            try:
-                with open('friends_list.pkl', 'rb') as fh:
-                    friends_list = pickle.load(fh) 
-            except:
-                friends_list = None
-            session['friends'] = Graph(friends_list).adjacency_list
+            session['friends'] = Graph().adjacency_list
             return redirect('/account')
         elif log==1:
             e = 'Invalid Username or Password'
@@ -176,12 +170,7 @@ def register_page():
         if reg == 0:
             error = 'Registered Successfully'
             account = user
-            try:
-                with open('friends_list.pkl', 'rb') as fh:
-                    friends_list = pickle.load(fh) 
-            except:
-                friends_list = None
-            friends = Graph(friends_list)
+            friends = Graph()
             friends.adjacency_list[account] = []
             session['friends'] = friends.adjacency_list
             friends.save()
@@ -452,14 +441,14 @@ def logout_page():
 
 @app.route('/unfollow')
 def unfriend_method():
-    graph = Graph(session.get('friends', None))
+    friends = Graph(session.get('friends', None))
     #get the adjacency list of friends
 
-    graph.unfollow(session.get('account', None), request.args.get('user'))
+    friends.unfollow(session.get('account', None), request.args.get('user'))
     #call the graph data structure's method to unfollow someone
 
-    graph.save()
-    session['friends'] = graph.adjacency_list
+    friends.save()
+    session['friends'] = friends.adjacency_list
     #save changes and copy it to the session variable
     return redirect('/friends')
 
