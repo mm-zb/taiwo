@@ -126,7 +126,7 @@ def lyrics_page():
 def recommend_page():
     id = request.args.get('id')
     if id:
-        df = update_csv(sp=sp, id=id)
+        df = update_csv(sp=sp, id=id, df=None)
         #creates a dataframe, with all previous data, and the song found added on
 
         model = df_to_matrix(df)
