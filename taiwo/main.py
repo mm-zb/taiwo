@@ -34,7 +34,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, 
 #conn.close()
 
 app = Flask(__name__)
-app.secret_key = 'secret'
+app.secret_key = config.APP_SECRET_KEY
 #shh
 
 app.config['SESSION_TYPE'] = 'memcached'
@@ -42,8 +42,8 @@ app.config['SESSION_TYPE'] = 'memcached'
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'secret'
-app.config['MAIL_PASSWORD'] = 'secret'
+app.config['MAIL_USERNAME'] = config.APP_MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = config.APP_MAIL_PASSWORD
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
