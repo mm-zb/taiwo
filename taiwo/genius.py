@@ -1,14 +1,18 @@
 from urllib.request import urlopen, Request
 import json
 
-def lyric_to_url(lyric):
+def lyric_to_url(lyric: str) -> str:
+    # lyric: a sentence
+    # return: a url 
     url = 'https://genius.com/api/search/lyric?q='
     lyric = lyric.split()
     lyric = '%20'.join(lyric)
     url += lyric
     return url 
 
-def get_songs(url):
+def get_songs(url: str) -> dict:
+    # url: a url
+    # return: complex json dictionary
     req = Request(
         url=url, 
         headers={'User-Agent': 'Mozilla/5.0'}
@@ -17,7 +21,9 @@ def get_songs(url):
     response = json.loads(body)
     return response
 
-def json_to_list(response):
+def json_to_list(response: dict) -> list:
+    # response: complex json dictionary
+    # return: list of 4-tuples of strings
     if not response['response']['sections'][0]['hits']:
         return []
     songs = list()
