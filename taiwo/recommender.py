@@ -1,20 +1,13 @@
 import pandas as pd
-import numpy as np
-from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from typing import Optional
 
 import config
 
 client_id = config.SPOTIFY_ID
 client_secret = config.SPOTIFY_SECRET
-
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
-
-df = pd.read_csv('csv/data.csv')
-#reading in the data as a pandas dataframe from the csv
 
 feature_columns = ['danceability',
                    'energy',
@@ -25,42 +18,21 @@ feature_columns = ['danceability',
                    'popularity']
 #specifying the columns that will be used from the csv to calculate similarity
 
-def df_to_matrix(df):
-    scaler = MinMaxScaler()
-    #transforms all values input between a certain range
-    #like an activation function
+def id_to_df(id: str, sp: spotipy.Spotify) -> pd.DataFrame:
+    """
+    Converts a song_id into a one-row pandas DataFrame
 
-    scaled_df = scaler.fit_transform(df[feature_columns])
-    #changes all values of feature columns between 0 and 1
-    #eg decibels changes froma negative nu mber to 0<=n<=1
+    Args:
+        id: A string containing a Spotify song id
+        sp: Spotify API object
 
-    cosine_matrix = cosine_similarity(scaled_df)
-    #this is where the calculations are done
-    #each feature is combined and compared to the features of other songs
-    #then a 'similarity value' is calculated for every pair of songs
-    #each value is then placed in a matrix
+    Returns:
+        A pandas DataFrame containing one row of a song
+    """
 
-    return cosine_matrix
-
-def add_id_to_df(id):
-    df = pd.read_csv('csv/data.csv')
-    #gets the current songs from the csv, and stores in a pandas dataframe (df)
-    if id in df['track_id'].to_list():
-        return df
-        #if the song is already in the dataframe, return the dataframe with no changes
-    else:
-        song = id_to_df(id)
-        
-        df = pd.concat([df,song], ignore_index=True)
-        #combines the original dataframe with the new one (that is just the one song)
-        df.drop(df.columns[0], axis=1).to_csv('csv/data.csv')
-        #removes the duplicate index column
-        return df
-
-def id_to_df(id):
     track = sp.track(id)
     #gets the song data from the id using spotipy
-  
+
     song_features = {}
     song_features['artist'] = track['artists'][0]['name']
     song_features['song_title'] = track['name']
@@ -78,7 +50,78 @@ def id_to_df(id):
 
     return df
 
+def df_to_matrix(df):
+    """
+    Generates a cosine matrix from a song DataFrame
+
+    Args:
+        df: A pandas DataFrame of song data
+    
+    Returns:
+        2D array of cosine similarity values
+    """
+
+    scaler = MinMaxScaler()
+    #transforms all values input between a certain range
+    #like an activation function
+
+    scaled_df = scaler.fit_transform(df[feature_columns])
+    #changes all values of feature columns between 0 and 1
+    #eg decibels changes froma negative nu mber to 0<=n<=1
+
+    cosine_matrix = cosine_similarity(scaled_df)
+    #this is where the calculations are done
+    #each feature is combined and compared to the features of other songs
+    #then a 'similarity value' is calculated for every pair of songs
+    #each value is then placed in a matrix
+
+    return cosine_matrix
+
+def update_csv(id: str, sp: spotipy.Spotify, df: Optional[pd.DataFrame]) -> pd.DataFrame:
+    """
+    Adds a song to the .csv file if it isn't already in there
+
+    Args:
+        id: A string representing a Spotify song_id
+        sp: Spotify API object
+        df: An optional pandas DataFrame containing song information
+    
+    Returns:
+        A pandas dataframe with the song added
+    """
+
+    csv_path = 'csv/data.csv'
+
+    if not df:
+        df = pd.read_csv(csv_path)
+        #gets the current songs from the csv, and stores in a pandas dataframe (df)
+    
+    if id in df['track_id'].values:
+        return df
+        #if the song is already in the dataframe, return the dataframe with no changes
+    
+    new_song_df = id_to_df(id, sp)
+    if not new_song_df.empty:
+        df = pd.concat([df, new_song_df], ignore_index=True)
+        #combines the original dataframe with the new one (that is just the one song)
+        df.to_csv(csv_path, index=False)
+        # removes the duplicate index column
+    
+    return df
+
 def recommend(song, model, df, n=10):
+    """
+    Uses a generated model to return the n most related songs to an input song
+
+    Args:
+        song: A string of a Spotify song id that similar songs are generated for
+        model: A 2D array of cosine similarity values
+        df: A pandas DataFrame containing all song data
+
+    Returns:
+        A list of the n most relevant songs
+    """
+
     indices = pd.Series(df.index, index=df['track_id']).drop_duplicates()
     #creates a pd.Series data structure
     #this is the same as a 1D array, but the indices can be anything
@@ -117,7 +160,5 @@ def recommend(song, model, df, n=10):
     top_titles = top_titles.tolist()
     top_artists = top_artists.tolist()
     #converts from a pandas series to a python list
-    top=[]
-    for i in range(n):
-        top.append(top_titles[i]+' - '+top_artists[i])
+    top = [(f"{top_titles[i]} - {top_artists[i]}") for _ in range(n)]
     return top

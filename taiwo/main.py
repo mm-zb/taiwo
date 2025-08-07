@@ -1,4 +1,4 @@
-from recommender import recommend, add_id_to_df, df_to_matrix
+from recommender import recommend, update_csv, df_to_matrix
 from genius import search_lyrics
 from spotify_auth import get_code, get_token, refresh_access
 from spotify_requests import request_top_songs, clean_top_songs, request_top_artists
@@ -243,9 +243,9 @@ def lyrics_page():
 
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommend_page():
-    if request.args.get('id'):
-
-        df = add_id_to_df(request.args.get('id'))
+    id = request.args.get('id')
+    if id:
+        df = update_csv(sp=sp, id=id)
         #creates a dataframe, with all previous data, and the song found added on
 
         model = df_to_matrix(df)
