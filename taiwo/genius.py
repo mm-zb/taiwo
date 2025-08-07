@@ -17,7 +17,13 @@ def search_lyrics(lyrics: str) -> list:
 
         req = Request(
             url=url, 
-            headers={'User-Agent': 'Mozilla/5.0'}
+            headers={
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+                # in case of genius changing permissions again:
+                # navigate to 'https://genius.com/api/search/lyric?q=whos%20calling' in browser
+                # inspect element, go to network, rerequest
+                # copy user-agent into this header
+                }
         )
 
         body = urlopen(req).read()
