@@ -20,18 +20,17 @@ client_secret = config.SPOTIFY_SECRET
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
-#conn = sqlite3.connect('logins.db')
-#c = conn.cursor()
+# with sqlite3.connect('logins.db') as conn:
+#     c = conn.cursor()
 
-#c.execute("""CREATE TABLE users (
-#    username text,
-#    password text,
-#    email text,
-#    access_token text,
-#    refresh_token text   
-#    ) """)
-#print('new table made')
-#conn.close()
+#     c.execute("""CREATE TABLE users (
+#        username text,
+#        password text,
+#        email text,
+#        access_token text,
+#        refresh_token text   
+#        ) """)
+#     print('new table made')
 
 app = Flask(__name__)
 app.secret_key = config.APP_SECRET_KEY
@@ -318,8 +317,8 @@ def account_page():
                     #if they have entered their current passwords correct
                     if request.form['new_password']==request.form['confirm_password']:
                         #if the two entered passwords match
-                        statement = "UPDATE users SET password = '"+request.form['new_password']+"' WHERE username = '"+username+"'"
-                        c.execute(statement)
+                        statement = "UPDATE users SET password = ? WHERE username = ?"
+                        c.execute(statement, (request.form["new_password"], username))
                         conn.commit()
                         #update the database with their new password
                         response.append('Saved password successfully')
@@ -420,24 +419,21 @@ def spotify_page():
 def callback():
     code = request.url.split('=')[1]
     #get code
-    tokens = get_token(code)
+    access, refresh = get_token(code)
     #get token
     user = session.get('account', None)
 
     with sqlite3.connect('logins.db') as conn:
         c = conn.cursor()
-        statement = "UPDATE users SET access_token = '"+tokens[0]+"' WHERE username = '"+user+"'"
+        statement = "UPDATE users SET access_token = ? WHERE username = ?"
+        c.execute(statement, (access, user))
         #copy access token to database
 
-        c.execute(statement)
-        statement = "UPDATE users SET refresh_token = '"+tokens[1]+"' WHERE username = '"+user+"'"
+        statement = "UPDATE users SET refresh_token = ? WHERE username = ?"
+        c.execute(statement, (refresh, user))
         #copy refresh token to database
-
-        c.execute(statement)
         conn.commit()
     return redirect('/login')
-
-
 
 @app.route('/debug')
 def debug():
