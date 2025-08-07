@@ -171,7 +171,7 @@ def register_page():
             error = 'Registered Successfully'
             account = user
             friends = Graph()
-            friends.adjacency_list[account] = []
+            friends.add_new_user(user)
             session['friends'] = friends.adjacency_list
             friends.save()
             session['account'] = account
