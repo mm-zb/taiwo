@@ -1,5 +1,5 @@
 from recommender import recommend, add_id_to_df, df_to_matrix
-from genius import lyric_to_url, get_songs, json_to_list
+from genius import search_lyrics
 from spotify_auth import get_code, get_token, refresh_access
 from spotify_requests import request_top_songs, clean_top_songs, request_top_artists
 import config
@@ -236,10 +236,8 @@ def register_page():
 @app.route('/lyrics', methods=['GET', 'POST'])
 def lyrics_page():
     if request.method=='POST':
-        lyric = request.form['lyrics']
-        url = lyric_to_url(lyric)
-        response = get_songs(url)
-        songs = json_to_list(response)
+        lyrics = request.form['lyrics']
+        songs = search_lyrics(lyrics)
         return render_template('lyrics.html', flag=True, songs=songs)
     return render_template('lyrics.html', flag=False)
 
