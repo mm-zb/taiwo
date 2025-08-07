@@ -1,14 +1,12 @@
 from urllib.request import urlopen, Request
+from urllib.parse import quote
 import json
 
-def lyric_to_url(lyric: str) -> str:
+def lyric_to_url(lyrics: str) -> str:
     # lyric: a sentence
     # return: a url 
     url = 'https://genius.com/api/search/lyric?q='
-    lyric = lyric.split()
-    lyric = '%20'.join(lyric)
-    url += lyric
-    return url 
+    return url + quote(lyrics)
 
 def get_songs(url: str) -> dict:
     # url: a url
