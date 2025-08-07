@@ -58,10 +58,10 @@ def correct_login(username, password):
         return 2
     #checks if all fields are filled out
 
-    conn = sqlite3.connect('logins.db')
+    conn = sqlite3.connect("logins.db")
     c = conn.cursor()
 
-    c.execute('SELECT * FROM users')
+    c.execute("SELECT * FROM users")
     data = c.fetchall()
     #executes SQL to copy entire database to a variable
 
@@ -81,7 +81,7 @@ def add_friend(friend):
 
     conn = sqlite3.connect('logins.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM users')
+    c.execute("SELECT * FROM users")
     data = c.fetchall()
     #executes SQL to copy entire database to a variable
 
@@ -247,8 +247,8 @@ def stats_page():
 
     conn = sqlite3.connect('logins.db')
     c = conn.cursor()
-    statement = "SELECT * FROM users WHERE username = '"+username+"'"
-    c.execute(statement)
+    statement = "SELECT * FROM users WHERE username = ?"
+    c.execute(statement, (username))
     data = c.fetchall()[0]
     #get all of the logged in users data 
 
@@ -303,8 +303,8 @@ def generate_page():
 
     conn = sqlite3.connect('logins.db')
     c = conn.cursor()
-    statement = "SELECT * FROM users WHERE username = '"+username+"'"
-    c.execute(statement)
+    statement = "SELECT * FROM users WHERE username = ?"
+    c.execute(statement, (username))
     data = c.fetchall()[0]
     #get all of the logged in users data 
 
@@ -382,8 +382,8 @@ def account_page():
             #if tried to change password
             conn = sqlite3.connect('logins.db')
             c = conn.cursor()
-            statement = "SELECT * FROM users WHERE username = '"+username+"'"
-            c.execute(statement)
+            statement = "SELECT * FROM users WHERE username = ?"
+            c.execute(statement, (username))
             data = c.fetchall()[0]
             #get the user's current password
             
@@ -405,7 +405,7 @@ def account_page():
 
         conn = sqlite3.connect('logins.db')
         c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username = '"+username+"'")
+        c.execute(f"SELECT * FROM users WHERE username = ?", (username))
         data = c.fetchall()[0]
         conn.close()
         #runs regardless of whether they have changed their details or not
@@ -415,8 +415,8 @@ def account_page():
     if username:
         conn = sqlite3.connect('logins.db')
         c = conn.cursor()
-        statement="SELECT * FROM users WHERE username = '"+username+"'"
-        c.execute(statement)
+        statement="SELECT * FROM users WHERE username = ?"
+        c.execute(statement, (username))
         data = c.fetchall()[0]
         conn.close()
         
@@ -462,7 +462,7 @@ def forgot_password():
 
         conn = sqlite3.connect('logins.db')
         c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE email = '"+email+"'")
+        c.execute("SELECT * FROM users WHERE email = ?", (email))
         data = c.fetchall()
         #executes SQL to get accounts where email matches
 
