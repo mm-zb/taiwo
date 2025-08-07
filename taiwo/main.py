@@ -172,9 +172,11 @@ def stats_page():
         c = conn.cursor()
         statement = "SELECT access_token FROM users WHERE username = ?"
         c.execute(statement, (username))
-        spotify_token = c.fetchall()[0][0]
+        data = c.fetchall()
         #get all of the logged in users data 
-
+    if not data:
+        raise Exception(f"User {username} not found in database")
+    spotify_token = data[0][0]
     if spotify_token == 'null':
         return render_template('stats.html', username=True, token=False)
     #tells the user to connect their spotify account if it is not connected
@@ -228,9 +230,11 @@ def generate_page():
         c = conn.cursor()
         statement = "SELECT * FROM users WHERE username = ?"
         c.execute(statement, (username))
-        data = c.fetchall()[0]
+        data = c.fetchall()
         #get all of the logged in users data 
-    spotify_token = data[3]
+    if not data:
+        raise Exception(f"User {username} not found in database")
+    spotify_token = data[0][3]
     if spotify_token == 'null':
         return render_template('generate.html', username=True, token=False)
     #tells the user to connect their spotify account if it is not connected 
@@ -304,12 +308,15 @@ def account_page():
             #if tried to change password
             with sqlite3.connect('logins.db') as conn:
                 c = conn.cursor()
-                statement = "SELECT * FROM users WHERE username = ?"
+                statement = "SELECT password FROM users WHERE username = ?"
                 c.execute(statement, (username))
-                data = c.fetchall()[0]
+                data = c.fetchall()
                 #get the user's current password
+                if not data:
+                    raise Exception(f"User {username} not found in database")
                 
-                if request.form['current_password'] == data[1]: 
+                real_password = data[0][0]
+                if request.form['current_password'] == real_password: 
                     #if they have entered their current passwords correct
                     if request.form['new_password']==request.form['confirm_password']:
                         #if the two entered passwords match
@@ -325,7 +332,10 @@ def account_page():
                 #add appropriate repsonses
 
             c.execute(f"SELECT email FROM users WHERE username = ?", (username))
-            email = c.fetchall()[0][0]
+            data = c.fetchall()
+            if not data:
+                raise Exception(f"User {username} not found in database")
+            email = data[0][0]
             #runs regardless of whether they have changed their details or not
             #gets the users email to prefill the entry
 
@@ -335,7 +345,10 @@ def account_page():
             c = conn.cursor()
             statement="SELECT email FROM users WHERE username = ?"
             c.execute(statement, (username))
-            email = c.fetchall()[0][0]
+            data = c.fetchall()
+            if not data:
+                raise Exception(f"User {username} not found in database")
+            email = data[0][0]
         
         return render_template('account.html', account=username, current_email=email)
     return render_template('account.html', account=username)
@@ -361,7 +374,7 @@ def unfriend_method():
     friends = Graph(session.get('friends', None))
     #get the adjacency list of friends
 
-    friends.unfollow(session.get('account', None), request.args.get('user'))
+    friends.unfollow(session.get('account', None), request.form['user'])
     #call the graph data structure's method to unfollow someone
 
     friends.save()
