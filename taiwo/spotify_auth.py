@@ -6,62 +6,89 @@ import sqlite3
 
 import config
 
-client_id = config.SPOTIFY_ID
-client_secret = config.SPOTIFY_SECRET
+CLIENT_ID = config.SPOTIFY_ID
+CLIENT_SECRET = config.SPOTIFY_SECRET
+ENCODED_CREDENTIALS = base64.b64encode(CLIENT_ID.encode() + b':' + CLIENT_SECRET.encode()).decode("utf-8")
+TOKEN_HEADERS = {
+        "Authorization": "Basic " + ENCODED_CREDENTIALS,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+REDIRECT_URI = "http://localhost:80/callback"
 
-def get_code():
+def get_code() -> None:
     auth_headers = {
-        "client_id": 'id',
+        "client_id": CLIENT_ID,
         "response_type": "code",
-        "redirect_uri": "http://localhost:80/callback",
+        "redirect_uri": REDIRECT_URI,
         "scope": "user-library-read user-top-read user-read-recently-played user-library-modify"
     }
 
     webbrowser.open("https://accounts.spotify.com/authorize?" + urlencode(auth_headers))
 
-def get_token(code):
-    encoded_credentials = base64.b64encode(client_id.encode() + b':' + client_secret.encode()).decode("utf-8")
+#########################################################
+#           NEED TO IMPLEMENT ERROR HANDLING            #
+#########################################################
 
-    token_headers = {
-        "Authorization": "Basic " + encoded_credentials,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
+def get_token(code: str) -> tuple[str, str]:
+    # code: client auth code for spotify account
+    # return: tuple of the access and refresh token
 
     token_data = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": "http://localhost:80/callback"
+        "redirect_uri": REDIRECT_URI
     }
-    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    return [r.json()["access_token"],r.json()["refresh_token"]]
+    try:
+        r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=TOKEN_HEADERS)
+        parsed = r.json()
+        access = parsed.get("access_token")
+        refresh = parsed.get("refresh_token")
+        if access and refresh:
+            return (access, refresh)
+        print(f"Missing tokens in response. Response: {parsed}")
+        return None
+    except Exception as e:
+        print(f"Error getting token: {e}")
+        return None
 
-def refresh_access(user):
-    conn = sqlite3.connect('logins.db')
-    c = conn.cursor()
-    c.execute('SELECT * FROM users WHERE username="'+str(user)+'"')
-    data = c.fetchall()[0]
-    #executes SQL to get user's data
+def refresh_access(user: str) -> None:
+    # user: username in a string
+    # return: None
+    try:
     
-    conn.close()
+        with sqlite3.connect('logins.db') as conn:
+            c = conn.cursor()
+            c.execute("SELECT * FROM users WHERE username = ?", (user))
+            data = c.fetchone()
+            #executes SQL to get user's data
 
-    refresh_token = data[4]
-    encoded_credentials = base64.b64encode(client_id.encode() + b':' + client_secret.encode()).decode("utf-8")
-    token_headers = {
-        "Authorization": "Basic " + encoded_credentials,
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
+            if not data:
+                print(f"User {user} not found in database")
+                return
 
-    token_data = {
-        "grant_type": "refresh_token",
-        "client_id": "id",
-        "refresh_token": refresh_token,
-        "redirect_uri": "http://localhost:80/callback"
-    }
-    #sets up headers and payload for JSON request to api for refreshing of token
+            refresh_token = data[4]
+            token_data = {
+                "grant_type": "refresh_token",
+                "client_id": CLIENT_ID,
+                "refresh_token": refresh_token,
+            }
+            #sets up headers and payload for JSON request to api for refreshing of token
+            
+            r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=TOKEN_HEADERS)
+            parsed = r.json()
+            access_token = parsed.get("access_token")
+
+            if not access_token:
+                print(f"Error: New 'access_token' not found in refresh response for user '{user}'.")
+                conn.rollback()
+                return
+
+            c.execute('UPDATE users SET access_token = ? WHERE username = ?', (access_token, user))
+            conn.commit()
+            #executes SQL to add the updated token to database
+    except sqlite3.Error as e:
+        print(f"A database error occurred. Response: {e}")
+    except Exception as e:
+        print(f"An unknown error occurred. Response: {e}")
     
-    r = requests.post("https://accounts.spotify.com/api/token", data=token_data, headers=token_headers)
-    conn = sqlite3.connect('logins.db')
-    c = conn.cursor()
-    c.execute('UPDATE users SET access_token = "'+str(r)+'" WHERE username = "'+str(user)+'"')
-    #executes SQL to add the updated token to database
-    conn.close()
+        
