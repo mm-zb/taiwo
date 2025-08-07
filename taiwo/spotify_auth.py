@@ -25,10 +25,6 @@ def get_code() -> None:
 
     webbrowser.open("https://accounts.spotify.com/authorize?" + urlencode(auth_headers))
 
-#########################################################
-#           NEED TO IMPLEMENT ERROR HANDLING            #
-#########################################################
-
 def get_token(code: str) -> tuple[str, str]:
     # code: client auth code for spotify account
     # return: tuple of the access and refresh token
